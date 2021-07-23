@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Library:
-    def __init__(self, name, location, sync_type=None, sync_uri=None, auto_sync=True):
+    def __init__(self, name, location, sync_type=None, sync_uri=None, sync_branch=None, auto_sync=True):
         if sync_type and not sync_type in ["local", "git"]:
             raise ValueError(
                 "Library {} ({}) Invalid sync-type '{}'".format(
@@ -31,6 +31,7 @@ class Library:
         self.location = location
         self.sync_type = sync_type or "local"
         self.sync_uri = sync_uri
+        self.sync_branch = sync_branch
         self.auto_sync = auto_sync
 
     def update(self, force=False):
@@ -42,11 +43,9 @@ class Library:
             return
 
         # FIXME: Do an initial checkout if missing
-        if not os.path.exists(self.location):
-            logger.warning(
-                l("{} does not exist. Ignoring update".format(self.location))
-            )
-            return
+        #if not os.path.exists(self.location):
+        #    logger.warning(l(f"{self.location} does not exist. Ignoring update"))
+        #    return
 
         if not (self.auto_sync or force):
             logger.info(l("auto-sync disabled. Ignoring update"))

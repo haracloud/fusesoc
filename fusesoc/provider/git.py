@@ -18,14 +18,23 @@ class Git(Provider):
     def init_library(library):
         logger.info("Cloning library into {}".format(library.location))
         git_args = ["clone", library.sync_uri, library.location]
-        try:
-            Launcher("git", git_args).run()
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(str(e))
+
+        if library.sync_branch:
+            git_args.extend(["-b", library.sync_branch])
+
+        Git._exec(git_args)
 
     @staticmethod
     def update_library(library):
-        git_args = ["-C", library.location, "pull"]
+        if not os.path.exists(library.location + "/.git"):
+            Git.init_library(library)
+        else:
+            git_args = ["-C", library.location, "pull"]
+            Git._exec(git_args)
+
+
+    @staticmethod
+    def _exec(git_args):
         try:
             Launcher("git", git_args).run()
         except subprocess.CalledProcessError as e:

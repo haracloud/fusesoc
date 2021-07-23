@@ -223,6 +223,8 @@ class CoreManager:
 
     def add_library(self, library):
         """ Register a library """
+        _s = "Adding cores from library {} to manager."
+        logger.debug(_s.format(library.name))
         abspath = os.path.abspath(os.path.expanduser(library.location))
         _library = self._lm.get_library(abspath, "location")
         if _library:
@@ -230,6 +232,7 @@ class CoreManager:
             logger.warning(_s.format(library.name, abspath, _library.name))
             return
 
+        library.update()
         self._load_cores(library)
         self._lm.add_library(library)
 

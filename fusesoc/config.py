@@ -122,11 +122,17 @@ class Config:
                 sync_uri = None
 
             try:
+                sync_branch = config.get(section, "sync-branch")
+            except configparser.NoOptionError:
+                # sync-branch is absent for local libraries
+                sync_branch = None
+
+            try:
                 sync_type = config.get(section, "sync-type")
             except configparser.NoOptionError:
                 # sync-uri is absent for local libraries
                 sync_type = None
-            libraries.append(Library(name, location, sync_type, sync_uri, auto_sync))
+            libraries.append(Library(name, location, sync_type, sync_uri, sync_branch, auto_sync))
         # Get the environment variable for further cores
         env_cores_root = []
         if os.getenv("FUSESOC_CORES"):
